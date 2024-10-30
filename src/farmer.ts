@@ -15,6 +15,7 @@ const WeatherEffects = {
   [WeatherType.Stormy]: 2.5, // 生长速度减慢，时间为原来的2.5
   [WeatherType.Harvest]: 0.5 // 生长速度加快，时间缩短为原来的0.5
 };
+const fishTypes = ["鲤鱼", "鲱鱼", "小嘴鲈鱼", "太阳鱼", "鳀鱼", "沙丁鱼", "河鲈", "鲢鱼", "鲷鱼", "红鲷鱼", "海参", "虹鳟鱼", "大眼鱼", "西鲱", "大头鱼", "大嘴鲈鱼", "鲑鱼", "鬼鱼", "罗非鱼", "木跃鱼", "狮子鱼", "比目鱼", "大比目鱼", "午夜鲤鱼", "史莱姆鱼", "虾虎鱼", "红鲻鱼", "青花鱼", "狗鱼", "虎纹鳟鱼", "蓝铁饼鱼", "沙鱼"]; // 可以根据需要扩展
 
 // 定义全局商店数据库
 export const globalStore = {
@@ -193,7 +194,7 @@ export class Farmer {
       console.log(`事件类型: ${eventType}`);
 
       if (eventType === "小精灵催熟" && this.level >= 3) {
-        harvestTime =plantingTime * 60 * 60 * 1000 * weatherEffect * .8 +Date.now(); // 缩短20%的种植时间
+        harvestTime = plantingTime * 60 * 60 * 1000 * weatherEffect * .8 + Date.now(); // 缩短20%的种植时间
         for (let i = 0; i < quantity; i++) {
           let field = this.getNextAvailableField();
           this.crops[field] = { seed, harvestTime, stolen: false };
@@ -509,7 +510,6 @@ export class Farmer {
   }
   // 新增方法：判断是否为鱼类物品
   public isFish(item: string): boolean {
-    const fishTypes = ["鲤鱼", "鲱鱼", "小嘴鲈鱼", "太阳鱼", "鳀鱼", "沙丁鱼", "河鲈", "鲢鱼", "鲷鱼", "红鲷鱼", "海参", "虹鳟鱼", "大眼鱼", "西鲱", "大头鱼", "大嘴鲈鱼", "鲑鱼", "鬼鱼", "罗非鱼", "木跃鱼", "狮子鱼", "比目鱼", "大比目鱼", "午夜鲤鱼", "史莱姆鱼", "虾虎鱼", "红鲻鱼", "青花鱼", "狗鱼", "虎纹鳟鱼", "蓝铁饼鱼", "沙鱼"]; // 可以根据需要扩展
     return fishTypes.includes(item);
   }
 
@@ -699,8 +699,8 @@ export class Fisher extends Farmer {
       }
       let fisher = new Fisher(id, fisherData.name);
       for (const key in fisherData) {
-        if (key!=='weatherSystem')
-        fisher[key] = fisherData[key] || fisher[key]
+        if (key !== 'weatherSystem')
+          fisher[key] = fisherData[key] || fisher[key]
       }
       // farmer.fields = farmerData.fields || 6;
       // farmer.money = farmerData.money || 200;
@@ -850,10 +850,10 @@ export class Fisher extends Farmer {
     }
 
     const explorationTypes = {
-      //"测试远航": { duration: 10, cost: 0, reward: { minGold: 1200, maxGold: 1500, seeds: 7 } },
-      "近海远航": { duration: 5 * 60 * 60 * 1000, cost: 1000, reward: { minGold: 1200, maxGold: 1500, seeds: 7 } },
-      "远海探索": { duration: 8 * 60 * 60 * 1000, cost: 3000, reward: { minGold: 3200, maxGold: 4000, seeds: 15, fish: 5 } },
-      "随机探索": { duration: 12 * 60 * 60 * 1000, cost: 5000, reward: { minGold: 3000, maxGold: 8000, seeds: { min: 10, max: 20 }, fish: { min: 3, max: 10 } } }
+      // "测试远航": { duration: 10, cost: 0, reward: { minGold: 1200, maxGold: 1500,seeds: { min: 10, max: 20 }, fish: { min: 3, max: 10 } } },
+      "近海远航": { duration: 5 * 60 * 60 * 1000, reward: { minGold: 1200, maxGold: 1500, seeds: { min: 7, max: 7 } } },
+      "远海探索": { duration: 8 * 60 * 60 * 1000, reward: { minGold: 3200, maxGold: 4000, seeds: { min: 15, max: 15 }, fish: { min: 5, max: 5 } } },
+      "随机探索": { duration: 12 * 60 * 60 * 1000, reward: { minGold: 3000, maxGold: 8000, seeds: { min: 10, max: 20 }, fish: { min: 3, max: 10 } } }
     };
 
     const exploration = explorationTypes[type];
@@ -917,22 +917,23 @@ export class Fisher extends Farmer {
     }
 
     const explorationTypes = {
-      //"测试远航": { duration: 10, reward: { minGold: 1200, maxGold: 1500, seeds: 7 } },
-      "近海远航": { duration: 5 * 60 * 60 * 1000, reward: { minGold: 1200, maxGold: 1500, seeds: 7 } },
-      "远海探索": { duration: 8 * 60 * 60 * 1000, reward: { minGold: 3200, maxGold: 4000, seeds: 15, fish: 5 } },
+      // "测试远航": { duration: 10, cost: 0, reward: { minGold: 1200, maxGold: 1500,seeds: { min: 10, max: 20 }, fish: { min: 3, max: 10 } } },
+      "近海远航": { duration: 5 * 60 * 60 * 1000, reward: { minGold: 1200, maxGold: 1500, seeds: { min: 7, max: 7 } } },
+      "远海探索": { duration: 8 * 60 * 60 * 1000, reward: { minGold: 3200, maxGold: 4000, seeds: { min: 15, max: 15 }, fish: { min: 5, max: 5 } } },
       "随机探索": { duration: 12 * 60 * 60 * 1000, reward: { minGold: 3000, maxGold: 8000, seeds: { min: 10, max: 20 }, fish: { min: 3, max: 10 } } }
     };
 
     const exploration = explorationTypes[this.explorationType];
-    const elapsedTime = Date.now() - this.explorationStartTime;
-    if (elapsedTime >= exploration.duration) {
+    // const elapsedTime = Date.now() - this.explorationStartTime;
+    // if (elapsedTime >= exploration.duration)
+    {
       const reward = exploration.reward;
       const gold = Math.floor(Math.random() * (reward.maxGold - reward.minGold + 1)) + reward.minGold;
       this.money += gold;
 
       const seedTypes = Object.keys(globalStore).filter(item => item.endsWith("种子"));
       const seedType = seedTypes[Math.floor(Math.random() * seedTypes.length)];
-      const seedQuantity = reward.seeds;
+      const seedQuantity = reward.seeds.min + Math.floor(Math.random()*(reward.seeds.max-reward.seeds.min));
 
       if (!this.warehouse[seedType]) {
         this.warehouse[seedType] = 0;
@@ -941,9 +942,10 @@ export class Fisher extends Farmer {
 
       let fishReward = "";
       if (reward.fish) {
-        const fishTypes = Object.keys(this.warehouse).filter(item => this.isFish(item));
+        // const fishTypes = Object.keys(this.warehouse).filter(item => this.isFish(item));
+        console.log(JSON.stringify(fishTypes))
         const fishType = fishTypes[Math.floor(Math.random() * fishTypes.length)];
-        const fishQuantity = reward.fish;
+        const fishQuantity = reward.fish.min + Math.floor(Math.random()*(reward.fish.max-reward.fish.min));
 
         if (!this.warehouse[fishType]) {
           this.warehouse[fishType] = 0;
@@ -959,8 +961,6 @@ export class Fisher extends Farmer {
 
       return `[CQ:at,qq=${idnumber}]你的船队归来啦，带回了${gold}金币、${seedType}×${seedQuantity}mp${fishReward}`;
     }
-
-    return "";
   }
 
   public isFish(item: string): boolean {
@@ -969,9 +969,9 @@ export class Fisher extends Farmer {
   }
   toJSON() {
     const obj = {} as any
-    for(const key in this) {
-      if (key!=='weatherSystem')
-      obj[key] = this[key]
+    for (const key in this) {
+      if (key !== 'weatherSystem')
+        obj[key] = this[key]
     }
     return obj
   }
