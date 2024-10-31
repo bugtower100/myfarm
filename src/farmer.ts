@@ -930,7 +930,7 @@ export class Fisher extends Farmer {
 
     const exploration = explorationTypes[this.explorationType];
     // const elapsedTime = Date.now() - this.explorationStartTime;
-    // if (elapsedTime >= exploration.duration) 
+    // if (elapsedTime >= exploration.duration)
     {
       const reward = exploration.reward;
       const gold = Math.floor(Math.random() * (reward.maxGold - reward.minGold + 1)) + reward.minGold;
