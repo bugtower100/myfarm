@@ -851,9 +851,9 @@ export class Fisher extends Farmer {
 
     const explorationTypes = {
       // "测试远航": { duration: 10, cost: 0, reward: { minGold: 1200, maxGold: 1500,seeds: { min: 10, max: 20 }, fish: { min: 3, max: 10 } } },
-      "近海远航": { duration: 5 * 60 * 60 * 1000, reward: { minGold: 1200, maxGold: 1500, seeds: { min: 7, max: 7 } } },
-      "远海探索": { duration: 8 * 60 * 60 * 1000, reward: { minGold: 3200, maxGold: 4000, seeds: { min: 15, max: 15 }, fish: { min: 5, max: 5 } } },
-      "随机探索": { duration: 12 * 60 * 60 * 1000, reward: { minGold: 3000, maxGold: 8000, seeds: { min: 10, max: 20 }, fish: { min: 3, max: 10 } } }
+      "近海远航": { duration: 5 * 60 * 60 * 1000, cost: 1000, reward: { minGold: 1200, maxGold: 1500, seeds: { min: 7, max: 7 } } },
+      "远海探索": { duration: 8 * 60 * 60 * 1000, cost: 3000, reward: { minGold: 3200, maxGold: 4000, seeds: { min: 15, max: 15 }, fish: { min: 5, max: 5 } } },
+      "随机探索": { duration: 12 * 60 * 60 * 1000, cost: 5000, reward: { minGold: 3000, maxGold: 8000, seeds: { min: 10, max: 20 }, fish: { min: 3, max: 10 } } }
     };
 
     const exploration = explorationTypes[type];
@@ -918,9 +918,9 @@ export class Fisher extends Farmer {
 
     const explorationTypes = {
       // "测试远航": { duration: 10, cost: 0, reward: { minGold: 1200, maxGold: 1500,seeds: { min: 10, max: 20 }, fish: { min: 3, max: 10 } } },
-      "近海远航": { duration: 5 * 60 * 60 * 1000, reward: { minGold: 1200, maxGold: 1500, seeds: { min: 7, max: 7 } } },
-      "远海探索": { duration: 8 * 60 * 60 * 1000, reward: { minGold: 3200, maxGold: 4000, seeds: { min: 15, max: 15 }, fish: { min: 5, max: 5 } } },
-      "随机探索": { duration: 12 * 60 * 60 * 1000, reward: { minGold: 3000, maxGold: 8000, seeds: { min: 10, max: 20 }, fish: { min: 3, max: 10 } } }
+      "近海远航": { duration: 5 * 60 * 60 * 1000, cost: 1000, reward: { minGold: 1200, maxGold: 1500, seeds: { min: 7, max: 7 } } },
+      "远海探索": { duration: 8 * 60 * 60 * 1000, cost: 3000, reward: { minGold: 3200, maxGold: 4000, seeds: { min: 15, max: 15 }, fish: { min: 5, max: 5 } } },
+      "随机探索": { duration: 12 * 60 * 60 * 1000, cost: 5000, reward: { minGold: 3000, maxGold: 8000, seeds: { min: 10, max: 20 }, fish: { min: 3, max: 10 } } }
     };
 
     const exploration = explorationTypes[this.explorationType];
