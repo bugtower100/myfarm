@@ -461,31 +461,35 @@ export class Farmer {
     if (this.money < totalPrice) {
       return `嗯...你的金币不够购买${quantity}个${item}。`;
     }
-
-    if (item === "扩容田地") {
-      let level = globalStore[item].level;
-      if (this.purchasedFields[level]) {
-        return `你已经购买过该等级的扩容田地啦！`;
-      }
-      this.fields += quantity;
-      this.purchasedFields[level] = true;
-    } else if (item === "扩容田地ii") {
-      if (this.purchasedFields[5]) {
-        return `你已经购买过5级扩容田地啦！`;
-      }
-      this.fields += 1; // 5级扩容田地一次只能购买一个
-      this.purchasedFields[5] = true;
-      delete globalStore["扩容田地ii"]; // 购买后从商店消失
-    } else {
-      if (!this.warehouse[item]) {
-        this.warehouse[item] = 0;
-      }
-      this.warehouse[item] += quantity;
+    if (quantity > 1) {
+      return `田地买多了,最多买一个`; //这里我随便加了一个返回，不让买就行了
     }
-
-    this.money -= totalPrice;
-    this.saveData();
-    return `铛铛——成功购买${item}${quantity}个。`;
+    else {
+      if (item === "扩容田地") {
+        let level = globalStore[item].level;
+        if (this.purchasedFields[level]) {
+          return `你已经购买过该等级的扩容田地啦！`;
+        }
+        this.fields += quantity;
+        this.purchasedFields[level] = true;
+      } else if (item === "扩容田地ii") {
+        if (this.purchasedFields[5]) {
+          return `你已经购买过5级扩容田地啦！`;
+        }
+        this.fields += 1; // 5级扩容田地一次只能购买一个
+        this.purchasedFields[5] = true;
+        delete globalStore["扩容田地ii"]; // 购买后从商店消失
+      } else {
+        if (!this.warehouse[item]) {
+          this.warehouse[item] = 0;
+        }
+        this.warehouse[item] += quantity;
+      }
+  
+      this.money -= totalPrice;
+      this.saveData();
+      return `铛铛——成功购买${item}${quantity}个。`;
+    }
   }
 
   sellItem(item: string, quantity: number = 1) {
