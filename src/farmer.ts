@@ -461,7 +461,7 @@ export class Farmer {
     if (this.money < totalPrice) {
       return `嗯...你的金币不够购买${quantity}个${item}。`;
     }
-    if (quantity > 1) {
+    if (quantity > 1 && (item === "扩容田地" || item === "扩容田地ii") ) {
       return `田地买多了,最多买一个`; //这里我随便加了一个返回，不让买就行了
     }
     else {
