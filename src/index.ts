@@ -1,6 +1,8 @@
-import { Farmer,Fisher,WeatherType } from './farmer';
-import { WeatherManager } from './weatherManager'; // 导入 WeatherManager 类
-
+// import { Farmer } from './farmer';
+import { Farmer } from './finalFarmer';
+import { WeatherManager,WeatherType } from './weatherManager'; // 导入 WeatherManager 类
+import {TimerInit } from './timer'
+import { ExplorationType } from './explorer';
 (() => {
   // 定义 weatherManager 变量并初始化 WeatherManager 类的实例
   const weatherManager = WeatherManager.getInstance();
@@ -9,44 +11,10 @@ import { WeatherManager } from './weatherManager'; // 导入 WeatherManager 类
     if (!seal.ext.find("我的农田插件")) {
       const ext = seal.ext.new("我的农田插件", "bug人@", "1.0.0");
       const nowTime = Date.now().toString()
+      TimerInit(ext)
       setTimeout(() => {
         ext.storageSet('taskId',nowTime)
       },500)
-      const Check = () => {
-        setTimeout(() => {
-          const ext = seal.ext.find("我的农田插件")
-          // console.log(ext.storageGet('taskId'),nowTime)
-          try{
-            if (ext&&ext.storageGet&&typeof ext.storageGet === 'function'&&ext.storageGet('taskId')===nowTime) {
-              // console.log(Date.now())
-              Check()
-              const str = seal.ext.find('我的农田插件').storageGet('VoyageTasks')
-              const data:{reachTime:number,userId:string,replyCtx: [string,string,string,string,boolean]}[] = str ? JSON.parse(str):[]
-              const resData:{reachTime:number,userId:string,replyCtx: [string,string,string,string,boolean]}[] = []
-              data.forEach(v => {
-                // console.log(JSON.stringify(v))
-                if (v.reachTime<Date.now()) {
-                  const fisher = Fisher.getData(v.userId)
-                  // console.log((fisher.id))
-                  const replyStr = fisher.checkExplorationCompletion()
-                  // console.log('准备发出'+replyStr)
-                  messageTask(...v.replyCtx,replyStr)
-                  // seal.replyToSender(v.replyCtx[0],v.replyCtx[1],replyStr)
-                } else {
-                  resData.push(v)
-                }
-              })
-              // console.log(JSON.stringify(data))
-              if (data.length!==resData.length) {
-                seal.ext.find('我的农田插件').storageSet('VoyageTasks',JSON.stringify(resData))
-              }
-            }
-          }catch(e) {
-            console.log('err',e)
-          }
-        },5000)
-      }
-      Check()
       const cmdBecomeFarmer: seal.CmdItemInfo = {
         name: "成为农夫",
         help: "指令：.成为农夫",
@@ -70,30 +38,27 @@ import { WeatherManager } from './weatherManager'; // 导入 WeatherManager 类
         name: "农场指令",
         help: "指令：.农场指令",
         solve: (ctx, msg) => {
-          const helpMessage = `
-    农场指令帮助信息：
-    .签到 - 签到并获得每日奖励
-
-    .我的农田 - 查看我的农田信息
-    .种植<农作物><数量> - 种植农作物（数量和物品间请加空格）
-    .农田商店 - 查看农田商店
-    .购买 <商品名>（数量） - 购买商品（数量和物品间请加空格）
-    .出售 <商品名>（数量） - 出售商品（数量和物品间请加空格）
-    .好友信息<@其他人> - 查看好友的农田信息
-    .我的仓库 - 查看我的仓库
-
-    .铲除农田<田地名> - 铲除农田中的作物
-    .偷窃<@其他人> - 偷窃其他人的作物
-    .收获 - 收获所有成熟的作物
-    .丢弃 <物品名>（数目） - 丢弃物品（数量和物品间请加空格）
-    .修改农夫名<新用户名> - 修改农夫名
-    .使用肥料 <田地名> - 使用肥料缩短时间
-
-    .钓鱼 - 在鱼塘钓鱼
-    .抓蚯蚓 - 抓蚯蚓转换为鱼饵
-    .远航 - 派遣船队远航探索
-    .农场指令 - 查看农场指令帮助信息
-    `;
+          const helpMessage = [
+            "农场指令帮助信息：",
+            ".签到 - 签到并获得每日奖励",
+            ".我的农田 - 查看我的农田信息",
+            ".种植<农作物><数量> - 种植农作物（数量和物品间请加空格）",
+            ".农田商店 - 查看农田商店",
+            ".购买 <商品名>（数量） - 购买商品（数量和物品间请加空格）",
+            ".出售 <商品名>（数量） - 出售商品（数量和物品间请加空格）",
+            ".好友信息<@其他人> - 查看好友的农田信息",
+            ".我的仓库 - 查看我的仓库",
+            ".铲除农田<田地名> - 铲除农田中的作物",
+            ".偷窃<@其他人> - 偷窃其他人的作物",
+            ".收获 - 收获所有成熟的作物",
+            ".丢弃 <物品名>（数目） - 丢弃物品（数量和物品间请加空格）",
+            ".修改农夫名<新用户名> - 修改农夫名",
+            ".使用肥料 <田地名> - 使用肥料缩短时间",
+            ".钓鱼 - 在鱼塘钓鱼",
+            ".抓蚯蚓 - 抓蚯蚓转换为鱼饵",
+            ".远航 - 派遣船队远航探索",
+            ".农场指令 - 查看农场指令帮助信息"
+          ].join('\n');
           seal.replyToSender(ctx, msg, helpMessage);
           return seal.ext.newCmdExecuteResult(true);
         },
@@ -274,7 +239,7 @@ import { WeatherManager } from './weatherManager'; // 导入 WeatherManager 类
             //初始化用户变量
             let id = msg.sender.userId;
             //let name = msg.sender.nickname;
-            farmer = Fisher.getData(id);
+            farmer = Farmer.getData(id);
 
             if (!farmer) {
               seal.replyToSender(ctx, msg, `你还不是农夫哦，试着用.成为农夫指令加入大家吧！`);
@@ -284,16 +249,16 @@ import { WeatherManager } from './weatherManager'; // 导入 WeatherManager 类
             // 获取目标用户的 ID
             let mctx = seal.getCtxProxyFirst(ctx, cmdArgs);
 
-            let targetFarmer = Fisher.getData(mctx.player.userId);
+            let targetFarmer = Farmer.getData(mctx.player.userId);
 
             if (!targetFarmer) {
               seal.replyToSender(ctx, msg, `这个人还没有成为农夫哦，要不要试着让他也加入你呀~。`);
               return seal.ext.newCmdExecuteResult(true);
             }
 
-            let now = ( /* @__PURE__ */new Date()).getTime();
-            if (farmer.getLastStealTime() != 0 && now - farmer.getLastStealTime() < 6e4) {
-              let remainingTime = Math.ceil((6e4 - (now - farmer.getLastStealTime())) / 1e3);
+            let now = (new Date()).getTime();
+            if (farmer.lastStealTime != 0 && now - farmer.lastStealTime < 6e4) {
+              let remainingTime = Math.ceil((6e4 - (now - farmer.lastStealTime)) / 1e3);
               seal.replyToSender(ctx, msg, `附近还有人看着呢，再等${remainingTime}秒后再试吧...`);
               return seal.ext.newCmdExecuteResult(true);
             }
@@ -506,7 +471,7 @@ import { WeatherManager } from './weatherManager'; // 导入 WeatherManager 类
               seal.replyToSender(ctx, msg, `你还不是农夫哦，试着用.成为农夫指令加入大家吧！`);
               return seal.ext.newCmdExecuteResult(true);
             }
-            const fisher = Fisher.getData(farmer.id);
+            const fisher = Farmer.getData(farmer.id);
             const result = fisher.catchWorms();
             seal.replyToSender(ctx, msg, result);
             return seal.ext.newCmdExecuteResult(true);
@@ -526,7 +491,7 @@ import { WeatherManager } from './weatherManager'; // 导入 WeatherManager 类
               return seal.ext.newCmdExecuteResult(true);
             }
 
-            const fisher = Fisher.getData(farmer.id);
+            const fisher = Farmer.getData(farmer.id);
             const explorationType = fisher.getExplorationType(); // 获取当前的远航类型
 
             if (explorationType) {
@@ -540,7 +505,7 @@ import { WeatherManager } from './weatherManager'; // 导入 WeatherManager 类
               return seal.ext.newCmdExecuteResult(true);
             }
 
-            const result = fisher.explore(cmdArgs.getArgN(1),ctx,msg);
+            const result = fisher.explore(cmdArgs.getArgN(1) as ExplorationType,ctx,msg);
             seal.replyToSender(ctx, msg, result);
             return seal.ext.newCmdExecuteResult(true);
           });
@@ -570,29 +535,6 @@ import { WeatherManager } from './weatherManager'; // 导入 WeatherManager 类
       ext.cmdMap["钓鱼"] = cmdFish;
       ext.cmdMap["抓蚯蚓"] = cmdCatchWorms;
       ext.cmdMap["远航"] = cmdExplore;
-    function messageTask(epId, guildId, groupId, userId, isPrivate, text) {
-        let targetCtx = getCtxAndMsgById(epId, guildId, groupId, userId, isPrivate);
-        if (!targetCtx||(targetCtx.length && targetCtx.length<2)) return
-        seal.replyToSender(targetCtx[0] as seal.MsgContext, targetCtx[1]as seal.Message, text);
-    }
-    function getCtxAndMsgById(epId, guildId, groupId, senderId, isPrivate) {
-        let eps = seal.getEndPoints();
-        for (let i = 0; i < eps.length; i++) {
-            if (eps[i].userId === epId) {
-                let msg = seal.newMessage();
-                if (isPrivate === true) {
-                    msg.messageType = "private";
-                } else {
-                    msg.messageType = "group";
-                    msg.groupId = groupId;
-                    msg.guildId = guildId;
-                }
-                msg.sender.userId = senderId;
-                return [seal.createTempCtx(eps[i], msg), msg];
-            }
-        }
-        return undefined;
-    }
       seal.ext.register(ext);
     }
   }
@@ -600,7 +542,7 @@ import { WeatherManager } from './weatherManager'; // 导入 WeatherManager 类
   function handleFarmerCommand(ctx: seal.MsgContext, msg: seal.Message, cmdArgs: seal.CmdArgs, callback: (farmer: Farmer | null, id: string, name: string) => seal.CmdExecuteResult) {
     let id = ctx.player.userId;
     let name = ctx.player.name;
-    let farmer = Fisher.getData(id);
+    let farmer = Farmer.getData(id);
     return callback(farmer, id, name);
   }
 
